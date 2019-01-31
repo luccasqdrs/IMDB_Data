@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+    web-crawler:
+        build: .
+        depends_on:
+            - mongo
+
+    web-api:
+        build: .
+        ports:
+            - "81:5000"
+        entrypoint: python ./imdb_data/app.py
+        depends_on:
+            - mongo
+
+    datascience-notebook:
+      image: jupyter/datascience-notebook
+      volumes:
+        - ./imdb_data/
+      ports:
+        - 8888:8888
+      container_name: datascience-notebook-container
+
+    mongo:
+        image: mongo:4.0.5-xenial
+        ports:
+            - "27017:27017"

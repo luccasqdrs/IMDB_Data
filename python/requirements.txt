@@ -1,0 +1,7 @@
+requests
+lxml
+pymongo
+Flask_Pymongo
+flask
+matplotlib
+jupyter

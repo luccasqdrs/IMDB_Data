@@ -3,19 +3,19 @@ import lxml.html
 import re
 from pymongo import MongoClient
 
-db_client = MongoClient()
+db_client = MongoClient('mongo', 27017)
 
 def crawl_movies_urls():
-    genres = ("action","comedy","mystery","sci_fi","adventure","fantasy","horror","animation","drama","thriller");
+    genres = (["action"]);
     movies_urls = []
     for genre in genres:
         print("Crawling {} movies...".format(genre))
-        for i in range(1,302,50):
-            url = "http://www.imdb.com/search/title?at=0&genres={}&sort=moviemeter,asc&start={}&title_type=feature".format(genre,str(i))
+        for i in range(1,100,100):
+            url = "https://www.imdb.com/search/title?title_type=feature&release_date=,2018-12-31&genres={}&view=simple&count=50&start={}".format(genre,str(i))
             print(url)
             response = requests.get(url)
             doc = lxml.html.fromstring(response.content)
-            links = doc.xpath('//a')
+            links = doc.xpath('//span[@class="lister-item-header"]/span/a')
             for link in links:
                 if 'href' in link.attrib:
                     if '/title/tt' in link.attrib['href']:
@@ -66,7 +66,7 @@ def crawl_movies_data():
         try:
             runtime = int(doc.xpath('//time[1]/text()')[1].rpartition("min")[0])
         except:
-            runtime = []
+            runtime = {}
 
         try:
             budget = doc.xpath('//*[@id="titleDetails"]/div[7]/text()')[1].rpartition("\n")[0]
@@ -117,7 +117,7 @@ def crawl_directors_data(directors):
         try:
             nationality = doc.xpath('//*[@id="name-born-info"]/a/text()')[0].rpartition(",")[-1].strip()
         except:
-            nationality = {}
+            nationality = "Unknown"
         gender_male_url = "https://www.imdb.com/search/name?name={}&gender=male&roles={}".format(name, director['movie_id'])
         response_male = requests.get(gender_male_url)
         gender_female_url = "https://www.imdb.com/search/name?name={}&gender=female&roles={}".format(name, director['movie_id'])
