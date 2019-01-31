@@ -6,12 +6,12 @@ from pymongo import MongoClient
 db_client = MongoClient('mongo', 27017)
 
 def crawl_movies_urls():
-    genres = (["action"]);
+    genres = ("action","comedy","mystery","sci_fi","adventure","fantasy","horror","animation","drama","thriller");
     movies_urls = []
     for genre in genres:
         print("Crawling {} movies...".format(genre))
-        for i in range(1,100,100):
-            url = "https://www.imdb.com/search/title?title_type=feature&release_date=,2018-12-31&genres={}&view=simple&count=50&start={}".format(genre,str(i))
+        for i in range(1,500,100):
+            url = "https://www.imdb.com/search/title?title_type=feature&release_date=,2018-12-31&genres={}&view=simple&count=100&start={}".format(genre,str(i))
             print(url)
             response = requests.get(url)
             doc = lxml.html.fromstring(response.content)
