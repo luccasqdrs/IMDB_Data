@@ -17,7 +17,7 @@ services:
     datascience-notebook:
       image: jupyter/datascience-notebook
       volumes:
-        - ./imdb_data/
+        - ./python:/imdb_data
       ports:
         - 8888:8888
       container_name: datascience-notebook-container
